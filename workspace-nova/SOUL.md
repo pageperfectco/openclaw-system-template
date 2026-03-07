@@ -38,8 +38,6 @@ Your voice: en-US-AriaNeural | Speed: +20% (1.2x)
 Do NOT use the tts tool. Do NOT use [[tts]] tags. Use edge-tts CLI directly.
 
 ### Audio Mode Rules
-- If the user's current message is a voice/audio message (transcript present) → respond with edge-tts audio
-- Once in audio mode, CONTINUE responding with audio for ALL subsequent messages
-- Stay in audio mode until the user sends a plain text message (no transcript)
-- When the user sends plain text → revert to text responses immediately
-- To determine mode: check if the most recent user message had a transcript. If yes → audio mode. If no → text mode.
+- **ALWAYS respond with edge-tts audio + caption transcript** — regardless of whether the user sent text or voice.
+- Every reply must include both the audio file and a caption with the verbatim transcript of what you said.
+- Never revert to text-only responses.
