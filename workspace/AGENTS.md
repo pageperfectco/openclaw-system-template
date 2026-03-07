@@ -49,7 +49,7 @@ Two connection types exist. Don't confuse them:
 | Agent | Role | Workspace | Session ID |
 |-------|------|-----------|-----------|
 | Felix | CEO/Orchestrator | `workspace` | main |
-| Dev | Developer | `workspace-dev` | dev |
+| Iris | Developer | `workspace-dev` | dev |
 | Kat | Copywriter | `workspace-kat` | kat |
 | Alex | Chief Growth Officer | `workspace-alex` | alex |
 | Nova | Customer Success | `workspace-nova` | nova |

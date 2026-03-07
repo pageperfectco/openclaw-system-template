@@ -7,7 +7,7 @@ A ready-to-run multi-agent OpenClaw setup. Clone this, follow `INSTALL.md`, and 
 | Agent | Role | Workspace |
 |-------|------|-----------|
 | **Felix** | CEO / Orchestrator | `workspace/` |
-| **Dev** | Developer | `workspace-dev/` |
+| **Iris** | Developer | `workspace-dev/` |
 | **Kat** | Master Copywriter | `workspace-kat/` |
 | **Alex** | Chief Growth Officer | `workspace-alex/` |
 | **Nova** | Customer Success | `workspace-nova/` |

@@ -1,6 +1,6 @@
 {
   "agents": {
-    "dev": {"status": "idle", "task": null, "since": null},
+    "iris": {"status": "idle", "task": null, "since": null},
     "kat": {"status": "idle", "task": null, "since": null},
     "alex": {"status": "idle", "task": null, "since": null},
     "nova": {"status": "idle", "task": null, "since": null},

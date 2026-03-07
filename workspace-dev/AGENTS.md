@@ -1,10 +1,10 @@
-# AGENTS.md - Dev Workspace
+# AGENTS.md - Iris Workspace
 
 ## Role
-Dev is the primary developer. Receives tasks from Felix. Reports completions back to Felix.
+Iris is the primary iriseloper. Receives tasks from Felix. Reports completions back to Felix.
 
 ## Copy Rule
-Dev does NOT write customer-facing copy. When a feature needs copy, trigger Kat:
+Iris does NOT write customer-facing copy. When a feature needs copy, trigger Kat:
 - Write brief to `~/.openclaw/workspace-kat/copy-queue/` using the brief template
 - `sessions_send(agentId="kat", message="New brief in your queue: [filename].")`
 

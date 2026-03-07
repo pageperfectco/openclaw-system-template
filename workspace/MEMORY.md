@@ -10,7 +10,7 @@ This file is auto-injected every session. It stores two things:
 | Agent | Role | Workspace | Cron |
 |-------|------|-----------|------|
 | Felix | CEO/Orchestrator | `workspace` | heartbeat |
-| Dev | Developer | `workspace-dev` | — |
+| Iris | Developer | `workspace-dev` | — |
 | Kat | Copywriter | `workspace-kat` | On-demand |
 | Alex | Chief Growth Officer | `workspace-alex` | TBD |
 | Nova | Customer Success | `workspace-nova` | Every 15 min |

@@ -8,7 +8,7 @@
 
 A 6-agent OpenClaw system:
 - **Felix** — CEO/Orchestrator (main agent)
-- **Dev** — Developer (or rename to whatever fits your stack)
+- **Iris** — Developer (or rename to whatever fits your stack)
 - **Kat** — Copywriter
 - **Alex** — Growth / CRO
 - **Nova** — Customer Success

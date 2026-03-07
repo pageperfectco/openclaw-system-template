@@ -1,4 +1,4 @@
-# MEMORY.md — Dev Tacit Knowledge + Project Registry
+# MEMORY.md — Iris Tacit Knowledge + Project Registry
 
 ## Active Projects
 
@@ -13,7 +13,7 @@
 > - **Key files:** [any important paths]
 > - **Notes:** [gotchas, decisions made, etc.]
 
-## Development Standards
+## Iriselopment Standards
 - TDD-first: write failing tests, then implement
 - All tests must pass before committing
 - Commit after every meaningful chunk — don't batch unrelated changes
