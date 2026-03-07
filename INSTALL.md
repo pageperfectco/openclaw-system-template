@@ -16,17 +16,19 @@ A 6-agent OpenClaw system:
 
 ---
 
-## Step 1 — Copy Workspace Files
+## Step 1 — Clone & Copy Workspace Files
 
-Copy each workspace folder from this repo to `~/.openclaw/`:
+Clone the repo and copy each workspace folder to `~/.openclaw/`:
 
 ```bash
-cp -r workspace/ ~/.openclaw/workspace/
-cp -r workspace-dev/ ~/.openclaw/workspace-dev/
-cp -r workspace-kat/ ~/.openclaw/workspace-kat/
-cp -r workspace-alex/ ~/.openclaw/workspace-alex/
-cp -r workspace-nova/ ~/.openclaw/workspace-nova/
-cp -r workspace-pierce/ ~/.openclaw/workspace-pierce/
+git clone https://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@github.com/pageperfectco/openclaw-system-template /tmp/openclaw-system-template
+
+cp -r /tmp/openclaw-system-template/workspace/ ~/.openclaw/workspace/
+cp -r /tmp/openclaw-system-template/workspace-dev/ ~/.openclaw/workspace-dev/
+cp -r /tmp/openclaw-system-template/workspace-kat/ ~/.openclaw/workspace-kat/
+cp -r /tmp/openclaw-system-template/workspace-alex/ ~/.openclaw/workspace-alex/
+cp -r /tmp/openclaw-system-template/workspace-nova/ ~/.openclaw/workspace-nova/
+cp -r /tmp/openclaw-system-template/workspace-pierce/ ~/.openclaw/workspace-pierce/
 ```
 
 > ⚠️ If `~/.openclaw/workspace/` already exists, review before overwriting — you may have existing config.
