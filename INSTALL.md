@@ -1,6 +1,6 @@
 # INSTALL.md — OpenClaw System Bootstrap
 
-> **For AI agents reading this:** Follow each step in order. Do not skip sections. Confirm completion before moving on.
+> **For AI agents reading this:** Follow each step in order. Do not skip sections. Confirm completion before moving on. All commands run in your sandbox — not on behalf of any other agent.
 
 ---
 
@@ -38,30 +38,56 @@ cp -r /tmp/openclaw-system-template/workspace-pierce/ ~/.openclaw/workspace-pier
 ## Step 2 — Update IDENTITY.md and USER.md
 
 In `~/.openclaw/workspace/`:
-- **`USER.md`** — Fill in your name, timezone, email, and any personal context.
-- **`IDENTITY.md`** — Felix's identity is pre-filled. Adjust if you want to rename.
+- **`USER.md`** — Fill in the user's name, timezone, email, and any personal context.
+- **`IDENTITY.md`** — Felix's identity is pre-filled. Adjust if they want to rename.
 
 In `~/.openclaw/workspace-dev/`:
-- **`IDENTITY.md`** — Rename "Dev" to whatever fits (e.g. "Sam", "Rex", "Cody"). Update mission to match your stack.
+- **`IDENTITY.md`** — Rename "Iris" to whatever fits. Update mission to match the stack.
 
 ---
 
-## Step 3 — Gather Credentials
+## Step 3 — Connect GitHub
 
-You'll need these services connected. For each one, get the credential and add it to `~/.openclaw/workspace/.env`:
+GitHub is required for the backup repo (Step 6) and for Iris to push code. Check if the GitHub CLI is already authenticated:
+
+```bash
+gh auth status
+```
+
+If not authenticated, run the login flow:
+
+```bash
+gh auth login
+```
+
+Follow the prompts — it will open a browser window to authorize. Once complete, verify:
+
+```bash
+gh auth status
+```
+
+Then add a GitHub Personal Access Token (PAT) to `.env` for git operations:
 
 ```bash
 touch ~/.openclaw/workspace/.env
+# Add: GITHUB_PAT=ghp_...your token here...
 ```
 
-**Minimum viable setup (start here):**
+To create a PAT: GitHub → Settings → Developer settings → Personal access tokens → Fine-grained → New token. Scope: your repos, Contents read/write.
+
+---
+
+## Step 4 — Gather Remaining Credentials
+
+Add these to `~/.openclaw/workspace/.env`:
+
+**Minimum viable setup:**
 | Service | What to get | Env var |
 |---------|------------|---------|
-| GitHub | Personal access token (PAT) | `GITHUB_PAT` |
 | Vercel | Access token | `VERCEL_TOKEN` |
 | OpenAI or Anthropic | API key (for Codex/Claude Code) | `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` |
 
-**When you're ready to expand:**
+**When ready to expand:**
 | Service | What to get | Env var |
 |---------|------------|---------|
 | Stripe | Secret key | `STRIPE_SECRET_KEY` |
@@ -69,11 +95,11 @@ touch ~/.openclaw/workspace/.env
 | Cloudflare | API token | `CLOUDFLARE_API_TOKEN` |
 | AgentMail | API key | Store at `~/.config/agentmail/api_key` |
 
-> **Note:** Some services (Vercel, Stripe, GitHub) can also be connected via Composio for richer tool access. See OpenClaw docs for Composio connection setup.
+> Some services (Vercel, Stripe) can also be connected via Composio for richer tool access. See OpenClaw docs.
 
 ---
 
-## Step 4 — Initialize Agent Status + Task Queue
+## Step 5 — Initialize Agent Status + Task Queue
 
 ```bash
 cd ~/.openclaw/workspace
@@ -81,21 +107,38 @@ python3 scripts/agent-status.py show
 python3 scripts/task-queue.py list
 ```
 
-Both should run without errors. If they do, your agent dispatch system is live.
+Both should run without errors. If they do, the agent dispatch system is live.
 
 ---
 
-## Step 5 — Configure Cron Jobs
+## Step 6 — Set Up Your Personal Backup Repo
 
-Open OpenClaw settings and create these cron jobs:
+This gives you a full git history of your workspace — so if a config change breaks something, you can revert instantly.
 
-| Job | Agent | Schedule | Description |
-|-----|-------|----------|-------------|
-| Felix heartbeat | Felix | Every 30-60 min (your choice) | Task queue checks, site health, agent monitoring |
-| Pierce security | Pierce | Weekly (e.g. Monday 9 AM) | Security audit |
-| Nova customer check | Nova | Every 15-30 min | Customer support inbox check |
+```bash
+# Initialize workspace as a git repo
+cd ~/.openclaw/workspace
+git init
+git add -A
+git commit -m "Initial workspace setup"
 
-In OpenClaw CLI:
+# Create a private backup repo on GitHub and push
+gh repo create openclaw-workspace-backup --private --source=. --remote=origin --push
+```
+
+From this point on, Felix will commit workspace changes periodically. To revert a bad change:
+```bash
+cd ~/.openclaw/workspace
+git log --oneline -10       # find the commit to revert to
+git revert HEAD             # or: git checkout <commit> -- MEMORY.md
+```
+
+> This repo is yours — it evolves with your system over time. Keep it private.
+
+---
+
+## Step 7 — Configure Cron Jobs
+
 ```bash
 openclaw cron add --label "felix:heartbeat" --schedule "*/30 * * * *" --workspace workspace --prompt "Heartbeat"
 openclaw cron add --label "pierce:security" --schedule "0 9 * * 1" --workspace workspace-pierce --prompt "Run your weekly security audit"
@@ -104,19 +147,9 @@ openclaw cron add --label "nova:check" --schedule "*/15 * * * *" --workspace wor
 
 ---
 
-## Step 6 — Read BOOTSTRAP.md
+## Step 8 — Optional: Set Up Email
 
-Felix's workspace has a `BOOTSTRAP.md` with first-run instructions. Open a chat with Felix and say:
-
-> "Start your bootstrap sequence."
-
-Felix will walk you through personalizing the setup, confirming agent connections, and running a first health check.
-
----
-
-## Step 7 — Optional: Set Up Email
-
-For outbound agent email, the system is pre-configured for [AgentMail](https://agentmail.to):
+For outbound agent email via [AgentMail](https://agentmail.to):
 1. Create an account at agentmail.to
 2. Create inboxes: `felix@[yourdomain].agentmail.to`, `nova@[yourdomain].agentmail.to`
 3. Save API key to `~/.config/agentmail/api_key`
@@ -124,9 +157,17 @@ For outbound agent email, the system is pre-configured for [AgentMail](https://a
 
 ---
 
+## Step 9 — Bootstrap
+
+Felix's workspace has a `BOOTSTRAP.md`. Open a chat with Felix and say:
+
+> "Start your bootstrap sequence."
+
+Felix will walk through personalizing the setup, confirming agent connections, and running a first health check.
+
+---
+
 ## You're Done
 
 Tell Felix:
 > "Installation complete. Run a first health check and introduce yourself."
-
-He'll verify the setup, tell you what's working, and propose your first plan.
