@@ -14,7 +14,7 @@ This file is auto-injected every session. It stores two things:
 | Kat | Copywriter | `workspace-kat` | On-demand |
 | Alex | Chief Growth Officer | `workspace-alex` | TBD |
 | Nova | Customer Success | `workspace-nova` | Every 15 min |
-| Pierce | QC & Security | `workspace-pierce` | Weekly |
+| Pierce | QC & Security | `workspace-pierce` | Daily 7 AM security · Monday 7 AM Lighthouse/UX |
 
 > ⚠️ **When registering a new project agent, also add them to this roster.** Other agents auto-discover new projects from here.
 

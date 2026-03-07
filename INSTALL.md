@@ -207,7 +207,8 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
 
 ```bash
 openclaw cron add --label "felix:heartbeat" --schedule "*/30 * * * *" --workspace workspace --prompt "Heartbeat"
-openclaw cron add --label "pierce:security" --schedule "0 9 * * 1" --workspace workspace-pierce --prompt "Run your weekly security audit"
+openclaw cron add --agent pierce --name "pierce-daily-security-audit" --cron "0 7 * * *" --tz "America/Denver" --session isolated --message "Run your daily security audit across all active projects: check all new commits since yesterday, scan for secrets/credentials in code, review dependency vulnerabilities (npm audit / pip audit), verify security headers on all live sites, check RLS on any new Supabase tables, and review open GitHub security issues. Report findings ranked by severity. Open GitHub issues for Tier 2+ findings. Page Felix immediately for Tier 3 critical findings."
+openclaw cron add --agent pierce --name "pierce-weekly-lighthouse-ux" --cron "0 7 * * 1" --tz "America/Denver" --session isolated --message "Run your weekly Lighthouse and UX/UI audit across all active projects: run Lighthouse on all live sites, record scores in MEMORY.md, flag any drop >5 points from last week. Review each site for UX/UI improvements: layout issues, accessibility gaps, mobile responsiveness, broken links, slow assets. Document findings and open GitHub issues for anything worth fixing. Focus purely on UX/UI quality and performance — no security checks today."
 openclaw cron add --label "nova:check" --schedule "*/15 * * * *" --workspace workspace-nova --prompt "Check inbox and handle any customer messages"
 ```
 
