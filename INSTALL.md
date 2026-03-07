@@ -137,7 +137,73 @@ git revert HEAD             # or: git checkout <commit> -- MEMORY.md
 
 ---
 
-## Step 7 — Configure Cron Jobs
+## Step 7 — Install Voice (STT + TTS)
+
+This gives all agents the ability to understand your voice messages (via Whisper) and speak back with unique voices (via Edge TTS).
+
+### Install Whisper (speech-to-text)
+
+```bash
+pip3 install openai-whisper --break-system-packages
+python3 -c "import whisper; whisper.load_model('small'); print('Whisper ready')"
+```
+
+### Install Edge TTS (text-to-speech)
+
+```bash
+pip3 install edge-tts --break-system-packages
+```
+
+### Configure `openclaw.json`
+
+Add the following to your `~/.openclaw/openclaw.json` under the root object (merge with existing keys — do not replace the whole file):
+
+```json5
+{
+  "tools": {
+    "media": {
+      "audio": {
+        "enabled": true,
+        "echoTranscript": false,
+        "models": [
+          {
+            "type": "cli",
+            "command": "/home/node/.local/bin/whisper",
+            "args": ["--model", "small", "{{MediaPath}}"],
+            "capabilities": ["audio"],
+            "maxBytes": 25165824
+          }
+        ]
+      }
+    }
+  },
+  "messages": {
+    "tts": {
+      "auto": "tagged",
+      "provider": "edge",
+      "modelOverrides": { "enabled": true },
+      "edge": { "enabled": true }
+    }
+  }
+}
+```
+
+> **Note:** Each agent's `SOUL.md` already includes their assigned voice and the edge-tts command pattern. No additional config needed per agent.
+
+### Voice roster (defaults — change any time in `SOUL.md`)
+
+| Agent | Voice | Gender |
+|-------|-------|--------|
+| Felix | en-US-GuyNeural | Male |
+| Iris (dev) | en-US-JennyNeural | Female |
+| Kat | en-US-MichelleNeural | Female |
+| Alex | en-US-DavisNeural | Male |
+| Nova | en-US-AriaNeural | Female |
+| Pierce | en-US-RogerNeural | Male |
+
+---
+
+## Step 8 — Configure Cron Jobs
 
 ```bash
 openclaw cron add --label "felix:heartbeat" --schedule "*/30 * * * *" --workspace workspace --prompt "Heartbeat"
@@ -147,7 +213,7 @@ openclaw cron add --label "nova:check" --schedule "*/15 * * * *" --workspace wor
 
 ---
 
-## Step 8 — Optional: Set Up Email
+## Step 9 — Optional: Set Up Email
 
 For outbound agent email via [AgentMail](https://agentmail.to):
 1. Create an account at agentmail.to
@@ -157,7 +223,7 @@ For outbound agent email via [AgentMail](https://agentmail.to):
 
 ---
 
-## Step 9 — Bootstrap
+## Step 10 — Bootstrap
 
 Felix's workspace has a `BOOTSTRAP.md`. Open a chat with Felix and say:
 
