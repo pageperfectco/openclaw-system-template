@@ -100,7 +100,34 @@ Add these to `~/.openclaw/workspace/.env`:
 
 ---
 
-## Step 5 — Initialize Agent Status + Task Queue
+## Step 5 — Configure Per-Agent Models
+
+Edit `~/.openclaw/openclaw.json` to set models. The pattern: orchestrator on Opus, everyone else on Sonnet.
+
+In the `agents` section, set the global default to Sonnet and give Felix an explicit Opus override:
+
+```json
+"agents": {
+  "defaults": {
+    "model": {
+      "primary": "anthropic/claude-sonnet-4-6"
+    }
+  },
+  "list": [
+    { "id": "main", "default": true, "name": "Felix", "workspace": "/home/node/.openclaw/workspace", "model": "anthropic/claude-opus-4-6" },
+    { "id": "dev",  "name": "Iris",  "workspace": "/home/node/.openclaw/workspace-dev" },
+    { "id": "kat",  "name": "Kat",   "workspace": "/home/node/.openclaw/workspace-kat" },
+    { "id": "alex", "name": "Alex",  "workspace": "/home/node/.openclaw/workspace-alex" },
+    { "id": "pierce", "name": "Pierce", "workspace": "/home/node/.openclaw/workspace-pierce" }
+  ]
+}
+```
+
+Iris, Kat, Alex, and Pierce inherit Sonnet from the default — no `model` field needed on their entries. Felix gets Opus explicitly. This avoids any mid-session model switching, which would double-process the triggering message.
+
+---
+
+## Step 6 — Initialize Agent Status + Task Queue
 
 ```bash
 cd ~/.openclaw/workspace
@@ -112,7 +139,7 @@ Both should run without errors. If they do, the agent dispatch system is live.
 
 ---
 
-## Step 6 — Set Up Your Personal Backup Repo
+## Step 7 — Set Up Your Personal Backup Repo
 
 This gives you a full git history of your workspace — so if a config change breaks something, you can revert instantly.
 
@@ -138,7 +165,7 @@ git revert HEAD             # or: git checkout <commit> -- workspace/MEMORY.md
 
 ---
 
-## Step 7 — Install Voice (STT + TTS)
+## Step 8 — Install Voice (STT + TTS)
 
 This gives all agents the ability to understand your voice messages (via Whisper) and speak back with unique voices (via Edge TTS).
 
@@ -214,7 +241,7 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
 
 ---
 
-## Step 8 — Configure Cron Jobs
+## Step 9 — Configure Cron Jobs
 
 ```bash
 # Felix heartbeat — runs every 30 minutes
@@ -234,7 +261,7 @@ openclaw cron add --agent pierce --name "pierce-weekly-lighthouse-ux" --cron "0 
 
 ---
 
-## Step 9 — Install Recommended Skills
+## Step 10 — Install Recommended Skills
 
 Skills extend what agents can do. Install from [ClawHub](https://clawhub.com):
 
@@ -285,7 +312,7 @@ clawhub install 2captcha --workspace workspace    # CAPTCHA solving
 
 ---
 
-## Step 10 — Set Up Email (Optional)
+## Step 11 — Set Up Email (Optional)
 
 For outbound agent email via [AgentMail](https://agentmail.to):
 1. Create an account at agentmail.to
@@ -296,7 +323,7 @@ For outbound agent email via [AgentMail](https://agentmail.to):
 
 ---
 
-## Step 11 — Bootstrap
+## Step 12 — Bootstrap
 
 Felix's workspace has a `BOOTSTRAP.md`. Open a chat with Felix and say:
 

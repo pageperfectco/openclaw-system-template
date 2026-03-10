@@ -95,11 +95,21 @@ Before sending ANY task to an agent:
 - `tiny` available for speed at slight accuracy cost
 - Always convert ogg→wav via ffmpeg first (handled automatically by the script)
 
-## Dynamic Model Switching
-- Default: whatever model is configured in OpenClaw (check `runtime` block in system prompt)
-- Lightweight: use `session_status(model="anthropic/claude-sonnet-4-6")` for simple conversations
-- Use `session_status(model="default")` to reset to the default model
-- Cannot switch to a heavier model by name — must use `default` to reset
+## Per-Agent Model Configuration
+Set the right model per agent in `openclaw.json` — not dynamically mid-session (that would double-process the triggering message before switching takes effect).
+
+**Pattern:** Orchestrator on a heavy model, specialists on a lighter one.
+
+In `~/.openclaw/openclaw.json`:
+- `agents.defaults.model.primary` → `"anthropic/claude-sonnet-4-6"` (all agents inherit this)
+- Felix's agent entry → add `"model": "anthropic/claude-opus-4-6"` to override
+
+Example agent list entries:
+```json
+{ "id": "main", "default": true, "name": "Felix", "workspace": "...", "model": "anthropic/claude-opus-4-6" },
+{ "id": "dev",  "name": "Iris",  "workspace": "..." }
+```
+Iris, Kat, Alex, Pierce all inherit Sonnet from defaults — no `model` field needed.
 
 ## Self-Improvement Protocol
 All agents follow the `self-improvement-protocol` skill:
