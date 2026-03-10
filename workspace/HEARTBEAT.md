@@ -21,7 +21,7 @@ Verify these are installed and working:
 - `codex --version` → should return codex-cli version
 - `claude --version` → should return Claude Code version
 - `ralphy --help` → should return Ralph CLI help
-If any are missing: install immediately (`npm install -g @openai/codex @anthropic-ai/claude-code`) before any dev agent tasks run.
+If any are missing: install immediately (`npm install -g @openai/codex @anthropic-ai/claude-code ralphy`) before any dev agent tasks run.
 
 ## Site Health Check (every heartbeat)
 1. Check all production sites return 200 (add your sites here once live)

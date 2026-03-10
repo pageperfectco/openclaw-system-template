@@ -182,7 +182,34 @@ git revert HEAD             # or: git checkout <commit> -- workspace/MEMORY.md
 
 ---
 
-## Step 9 — Install Voice (STT + TTS)
+## Step 9 — Install Coding Agent CLIs
+
+These CLIs are required for Iris (and any dev agent) to run coding tasks. Install them all upfront.
+
+```bash
+# Codex CLI (OpenAI) — raw code execution agent
+npm install -g @openai/codex
+
+# Claude Code (Anthropic) — alternative coding agent
+npm install -g @anthropic-ai/claude-code
+
+# Ralphy — Ralph orchestration loop for multi-step coding tasks with PRD validation
+npm install -g ralphy
+```
+
+Verify they're all working:
+
+```bash
+codex --version
+claude --version
+ralphy --help
+```
+
+> **What is Ralphy?** It's the Ralph orchestration loop — used when a task is complex enough to need iterative cycles, a PRD spec, or validation gates. Dev agents prefer it over raw Codex for anything multi-step. Without it installed, they'll fall back to raw Codex, which is less reliable for large tasks.
+
+---
+
+## Step 10 — Install Voice (STT + TTS)
 
 This gives all agents the ability to understand your voice messages (via Whisper) and speak back with unique voices (via Edge TTS).
 
@@ -258,7 +285,7 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
 
 ---
 
-## Step 10 — Configure Cron Jobs
+## Step 11 — Configure Cron Jobs
 
 ```bash
 # Felix heartbeat — runs every 30 minutes
@@ -278,7 +305,7 @@ openclaw cron add --agent pierce --name "pierce-weekly-lighthouse-ux" --cron "0 
 
 ---
 
-## Step 11 — Install Recommended Skills
+## Step 12 — Install Recommended Skills
 
 Skills extend what agents can do. Install from [ClawHub](https://clawhub.com):
 
@@ -329,7 +356,7 @@ clawhub install 2captcha --workspace workspace    # CAPTCHA solving
 
 ---
 
-## Step 12 — Set Up Email (Optional)
+## Step 13 — Set Up Email (Optional)
 
 For outbound agent email via [AgentMail](https://agentmail.to):
 1. Create an account at agentmail.to
@@ -340,7 +367,7 @@ For outbound agent email via [AgentMail](https://agentmail.to):
 
 ---
 
-## Step 13 — Bootstrap
+## Step 14 — Bootstrap
 
 Felix's workspace has a `BOOTSTRAP.md`. Open a chat with Felix and say:
 
