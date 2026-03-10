@@ -11,7 +11,7 @@ description: Workflow for requesting customer-facing copy from Kat. Use when any
 
 Check `~/.openclaw/workspace-kat/copy-library/[project]/` — approved copy for your surface may already exist. If it does, use it (or ask Kat for a light update).
 
-## How to Request (trigger Kat directly — no Felix or Daniel involvement)
+## How to Request (trigger Kat directly — no Felix or user involvement)
 
 1. Read the brief template: `~/.openclaw/workspace-kat/copy-queue/BRIEF-TEMPLATE.md`
 2. Write a complete brief to: `~/.openclaw/workspace-kat/copy-queue/YYYY-MM-DD-[project]-[surface]-[name].md`
@@ -28,4 +28,4 @@ Implement exactly as written. If a hard structural constraint requires deviation
 
 ## Exception
 
-If Kat emails Daniel for brand voice input on a new project, that's the only time Daniel is in the loop. Everything else runs between you and Kat.
+If Kat emails the user for brand voice input on a new project, that's the only time the user is in the loop. Everything else runs between you and Kat.

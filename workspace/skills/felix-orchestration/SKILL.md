@@ -13,7 +13,7 @@ description: Felix's orchestrator decision protocol for delegating coding tasks 
 | Multi-step, single project, no cross-agent deps | `ralphy --codex --prd PRD.md` directly |
 | Feature touching multiple agents | Write PRD first → delegate to dev agent → wire other side on completion |
 | Cross-agent coordination (shared interface, webhook) | Felix owns the spec, dev agent builds, Felix wires the other side |
-| Daniel asks a dev to build something complex | Check if they used Ralph — nudge if not |
+| The user asks a dev to build something complex | Check if they used Ralph — nudge if not |
 
 ## PRD-First Rule
 
@@ -31,7 +31,7 @@ When delegating to a dev agent, check in if no completion message within:
 - Ralph loop build: ~45 min
 - Complex PRD build: ~90 min
 
-Check in proactively. Don't wait for Daniel to ask.
+Check in proactively. Don't wait for the user to ask.
 
 ## TDD-First
 

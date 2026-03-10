@@ -1,11 +1,11 @@
 ---
 name: audio-reply
-description: Mandatory audio reply procedure for all agent replies to Daniel via Telegram. Use this skill for EVERY response — conversational, task completion, heartbeat, error report. Never send text-only replies. Generates an MP3 via edge-tts CLI then sends it as a Telegram voice message with caption.
+description: Mandatory audio reply procedure for all agent replies to the user via Telegram. Use this skill for EVERY response — conversational, task completion, heartbeat, error report. Never send text-only replies. Generates an MP3 via edge-tts CLI then sends it as a Telegram voice message with caption.
 ---
 
 # Audio Reply Procedure
 
-**Every reply to Daniel MUST follow all 3 steps. No exceptions.**
+**Every reply to the user MUST follow all 3 steps. No exceptions.**
 
 ## Step 1 — Generate audio
 
@@ -26,7 +26,7 @@ Each agent's voice and workspace path are defined in their SOUL.md:
 ## Step 2 — Send via message tool
 
 ```
-message(action=send, target="5377999741", channel=telegram, filePath=<AGENT_WORKSPACE>/agent-tts.mp3, asVoice=true, caption="YOUR REPLY TEXT")
+message(action=send, target="[YOUR_TELEGRAM_CHAT_ID]", channel=telegram, filePath=<AGENT_WORKSPACE>/agent-tts.mp3, asVoice=true, caption="YOUR REPLY TEXT")
 ```
 
 The caption must be the **verbatim transcript** of the audio.
