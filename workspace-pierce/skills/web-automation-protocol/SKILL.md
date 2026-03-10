@@ -10,6 +10,10 @@ metadata:
 
 **This protocol governs all agent use of web tools: Unbrowse, browser, mobile proxy, and CAPTCHA solving.**
 
+> ⚠️ **SETUP REQUIRED** before this skill is fully functional:
+> - **Mobile Proxy:** Configure your proxy at `~/.config/litport/proxy.conf` (or equivalent). See [Setup](#setup) below.
+> - **2Captcha:** Add your API key to `~/.config/2captcha/api-key`. Get a key at https://2captcha.com
+
 ## Decision Tree — Which Tool to Use
 
 ```
@@ -39,8 +43,39 @@ Need web data?
 1. **Direct API** — Always prefer if available
 2. **`web_fetch`** — Simple public page content
 3. **`unbrowse`** — Structured data extraction, API discovery, authenticated reads
-4. **`browser` tool + proxy** — All browser interactions (proxy is unlimited, always on)
+4. **`browser` tool + proxy** — All browser interactions (proxy should be unlimited, always on)
 5. **`browser` + proxy + `solve-captcha`** — Sites with CAPTCHAs
+
+---
+
+## Setup
+
+### Mobile Proxy Config
+
+Create `~/.config/litport/proxy.conf` (or your provider's equivalent):
+
+```bash
+# ~/.config/litport/proxy.conf
+PROXY_TYPE=http
+PROXY_HOST=YOUR_PROXY_HOST
+PROXY_PORT=YOUR_PROXY_PORT
+PROXY_USER=YOUR_PROXY_USER
+PROXY_PASS=YOUR_PROXY_PASS
+PROXY_URL=http://YOUR_PROXY_USER:YOUR_PROXY_PASS@YOUR_PROXY_HOST:YOUR_PROXY_PORT
+```
+
+Recommended providers: Litport, Brightdata, Oxylabs, Smartproxy. Use a **residential/mobile proxy** for best results — datacenter IPs get flagged more easily.
+
+### 2Captcha API Key
+
+```bash
+mkdir -p ~/.config/2captcha
+echo "YOUR_API_KEY_HERE" > ~/.config/2captcha/api-key
+```
+
+Get an API key at https://2captcha.com. Typical costs: ~$0.001/image CAPTCHA, ~$0.003/reCAPTCHA or Turnstile.
+
+---
 
 ## Unbrowse — Primary Web Tool
 
@@ -97,22 +132,17 @@ Unbrowse reverse-engineers site APIs from browser traffic. Instead of clicking t
 }
 ```
 
-**Check health:**
-```json
-{
-  "action": "health"
-}
-```
-
 ### Unbrowse Notes
 - First-time site capture takes 20-80 seconds (API discovery). Subsequent calls are fast.
 - Always use `dryRun: true` before unsafe mutations.
 - Use `confirmUnsafe: true` only with explicit user consent.
 - If Unbrowse returns structured data, stay in Unbrowse — don't switch to browser.
 
+---
+
 ## Mobile Proxy — Default ON for All Browser Automation
 
-**The Litport proxy is an unlimited plan. Default to always using it for any browser interaction.**
+**Default to always using the proxy for any browser interaction.**
 
 ### ✅ ALWAYS USE PROXY for:
 - All `browser` tool usage — no exceptions
@@ -125,33 +155,26 @@ Unbrowse reverse-engineers site APIs from browser traffic. Instead of clicking t
 - Internal APIs (Supabase, Vercel, Stripe, GitHub)
 - `web_fetch` of public documentation or blogs
 - `unbrowse` calls (Unbrowse manages its own browser traffic)
-- Our own sites (verilux.vercel.app, msc-inventory.vercel.app, etc.)
-- AgentMail, Composio, or other tool APIs
+- Your own sites and services
+- Tool APIs (AgentMail, Composio, etc.)
 - localhost or internal network requests
 
 ### How to Use the Proxy
 
-**Environment variable (for curl, Python requests, etc.):**
 ```bash
 source ~/.config/litport/proxy.conf
-curl -x $PROXY_URL https://target-site.com
+curl -x "$PROXY_URL" https://target-site.com
 ```
 
 **Python requests:**
 ```python
-import os
-proxy_url = open(os.path.expanduser('~/.config/litport/proxy.conf')).read()
-for line in proxy_url.split('\n'):
-    if line.startswith('PROXY_URL='):
-        proxy = line.split('=', 1)[1]
-proxies = {'http': proxy, 'https': proxy}
+import subprocess
+conf = dict(l.split('=',1) for l in open(os.path.expanduser('~/.config/litport/proxy.conf')) if '=' in l)
+proxies = {'http': conf['PROXY_URL'].strip(), 'https': conf['PROXY_URL'].strip()}
 response = requests.get('https://target-site.com', proxies=proxies)
 ```
 
-**OpenClaw browser tool with proxy:** Launch Chrome with proxy flags:
-```bash
-chromium --proxy-server="http://hub-us-7.litport.net:1337"
-```
+---
 
 ## When to Use 2Captcha
 
@@ -165,7 +188,6 @@ chromium --proxy-server="http://hub-us-7.litport.net:1337"
 - Bypassing access controls on unauthorized sites
 - Mass account creation on platforms that prohibit it
 - Scraping sites that explicitly block automated access (check ToS)
-- Testing — use 2Captcha's sandbox mode instead
 
 ### How to Use 2Captcha
 
@@ -183,21 +205,20 @@ TOKEN=$(solve-captcha -q turnstile -s SITEKEY -u https://target-site.com)
 solve-captcha balance
 ```
 
-API key is pre-configured at `~/.config/2captcha/api-key`. No setup needed.
+API key is read from `~/.config/2captcha/api-key`.
+
+---
 
 ## Budget Rules
 
 - **2Captcha balance check:** Run `solve-captcha balance` before any batch operation
-- **Alert threshold:** If balance drops below $10, notify Felix immediately
-- **Per-session limit:** No agent should solve more than 50 CAPTCHAs in a single session without Felix approval
-- **Cost awareness:** Image CAPTCHAs ~$0.001, reCAPTCHA ~$0.003, Turnstile ~$0.003
+- **Alert threshold:** If balance drops below $10, notify the main agent immediately
+- **Per-session limit:** No agent should solve more than 50 CAPTCHAs in a single session without approval
 
 ## Proxy Rules
 
-- **Shared resource:** One connection at a time gets best performance.
 - **Don't abuse:** Keep requests reasonable. No bulk scraping hundreds of pages per minute.
-- **IP rotation:** Auto-rotates every 2 min to 12 hours. Don't force-rotate unless blocked.
-- **Speed limit:** 5 Mbps max, 100 threads.
+- **IP rotation:** Auto-rotates periodically. Don't force-rotate unless blocked.
 - **If blocked:** Wait 5 minutes for IP rotation, then retry. Don't hammer the target.
 
 ## Logging Requirements
@@ -212,7 +233,7 @@ Every use of proxy, 2Captcha, or Unbrowse for sensitive operations MUST be logge
 ## Escalation
 
 - **Unbrowse fails?** → Fall back to browser tool. Log the failure.
-- **Proxy not working?** → Check if Litport subscription is active. Notify Felix.
-- **2Captcha balance low?** → Notify Felix immediately.
-- **Blocked even with proxy?** → Stop. Report to Felix. Do not retry more than 3 times.
-- **Unsure if a site allows automation?** → Ask Felix before proceeding.
+- **Proxy not working?** → Check subscription status. Notify main agent.
+- **2Captcha balance low?** → Notify main agent immediately.
+- **Blocked even with proxy?** → Stop. Report. Do not retry more than 3 times.
+- **Unsure if a site allows automation?** → Ask before proceeding.

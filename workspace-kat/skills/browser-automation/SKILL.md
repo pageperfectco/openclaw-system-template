@@ -58,22 +58,20 @@ browser close
 
 ## Best Practices
 
-1. **Always use the mobile proxy** — Litport is unlimited, residential IPs are cleaner. No reason not to.
+1. **Always use the mobile proxy** — If you have an unlimited residential proxy plan, default to always routing through it. Residential IPs are cleaner than datacenter IPs.
 2. **Always navigate first** before interacting
 3. **Take screenshots internally** after each command to verify page state — but **NEVER forward screenshots to the user** unless they explicitly ask. They are internal verification only.
 4. **Be specific** in action descriptions
 5. **Close browser** when done
 
-### Proxy Config (Litport — Always On)
-```
-Host: hub-us-7.litport.net:1337
-User: bpZGch
-Pass: A0dHU9
-Full URL: http://bpZGch:A0dHU9@hub-us-7.litport.net:1337
-Config file: ~/.config/litport/proxy.conf
+### Proxy Config
+```bash
+# Read from config file — never hardcode credentials
+source ~/.config/litport/proxy.conf
+# Provides: $PROXY_URL, $PROXY_HOST, $PROXY_PORT, $PROXY_USER, $PROXY_PASS
 ```
 
-For OpenClaw `browser` tool: the proxy is applied at the network level — no special flags needed in tool calls. For curl/Python, pass the proxy URL explicitly.
+For OpenClaw `browser` tool: the proxy is applied at the network level — no special flags needed in tool calls. For curl/Python, read `~/.config/litport/proxy.conf` and pass `$PROXY_URL` explicitly.
 
 ## Troubleshooting
 
@@ -174,4 +172,4 @@ document.cookie  // Check for session cookie (often 'id', 'token', 'session')
 2. **Check if server actually validates it** — call the API endpoint directly (curl/XHR) without a token; if it works, skip Turnstile entirely
 3. **If server requires it** — solve with 2captcha (`TurnstileTaskProxyless`, sitekey from JS bundle: grep `TURNSTILE_SITE_KEY`)
 4. **Inject token into React state** — use the SPA Internal API pattern above to call the login function directly (token in data payload)
-5. **Last resort** — use proxy + 2captcha + real browser (Litport → solve → inject)
+5. **Last resort** — use proxy + 2captcha + real browser (proxy → solve → inject)
