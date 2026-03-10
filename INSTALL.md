@@ -6,12 +6,13 @@
 
 ## What This Installs
 
-A 5-agent OpenClaw system:
+A 6-agent OpenClaw system:
 - **Felix** — CEO/Orchestrator (main agent)
 - **Iris** — Developer (rename to whatever fits your stack)
 - **Kat** — Copywriter
 - **Alex** — Growth / CRO
 - **Pierce** — QC & Security
+- **Silas** — SEO Lead
 
 ---
 
@@ -27,6 +28,7 @@ cp -r /tmp/openclaw-system-template/workspace-dev/ ~/.openclaw/workspace-dev/
 cp -r /tmp/openclaw-system-template/workspace-kat/ ~/.openclaw/workspace-kat/
 cp -r /tmp/openclaw-system-template/workspace-alex/ ~/.openclaw/workspace-alex/
 cp -r /tmp/openclaw-system-template/workspace-pierce/ ~/.openclaw/workspace-pierce/
+cp -r /tmp/openclaw-system-template/workspace-silas/ ~/.openclaw/workspace-silas/
 ```
 
 > ⚠️ If `~/.openclaw/workspace/` already exists, review before overwriting — you may have existing config.
@@ -42,7 +44,7 @@ In `~/.openclaw/workspace/`:
 In `~/.openclaw/workspace-dev/`:
 - **`IDENTITY.md`** — Rename "Iris" to whatever fits your stack. Update mission to match.
 
-In each agent workspace (`workspace-kat/`, `workspace-alex/`, `workspace-pierce/`):
+In each agent workspace (`workspace-kat/`, `workspace-alex/`, `workspace-pierce/`, `workspace-silas/`):
 - **`IDENTITY.md`** — Review and adjust the agent name/role if desired.
 
 ---
@@ -114,16 +116,17 @@ In the `agents` section, set the global default to Sonnet and give Felix an expl
     }
   },
   "list": [
-    { "id": "main", "default": true, "name": "Felix", "workspace": "/home/node/.openclaw/workspace", "model": "anthropic/claude-opus-4-6" },
-    { "id": "dev",  "name": "Iris",  "workspace": "/home/node/.openclaw/workspace-dev" },
-    { "id": "kat",  "name": "Kat",   "workspace": "/home/node/.openclaw/workspace-kat" },
-    { "id": "alex", "name": "Alex",  "workspace": "/home/node/.openclaw/workspace-alex" },
-    { "id": "pierce", "name": "Pierce", "workspace": "/home/node/.openclaw/workspace-pierce" }
+    { "id": "main",  "default": true, "name": "Felix",  "workspace": "/home/node/.openclaw/workspace",        "model": "anthropic/claude-opus-4-6" },
+    { "id": "dev",   "name": "Iris",   "workspace": "/home/node/.openclaw/workspace-dev" },
+    { "id": "kat",   "name": "Kat",    "workspace": "/home/node/.openclaw/workspace-kat" },
+    { "id": "alex",  "name": "Alex",   "workspace": "/home/node/.openclaw/workspace-alex" },
+    { "id": "pierce","name": "Pierce", "workspace": "/home/node/.openclaw/workspace-pierce" },
+    { "id": "silas", "name": "Silas",  "workspace": "/home/node/.openclaw/workspace-silas" }
   ]
 }
 ```
 
-Iris, Kat, Alex, and Pierce inherit Sonnet from the default — no `model` field needed on their entries. Felix gets Opus explicitly. This avoids any mid-session model switching, which would double-process the triggering message.
+Iris, Kat, Alex, Pierce, and Silas inherit Sonnet from the default — no `model` field needed on their entries. Felix gets Opus explicitly. This avoids any mid-session model switching, which would double-process the triggering message.
 
 ---
 
