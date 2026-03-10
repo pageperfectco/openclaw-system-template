@@ -9,11 +9,10 @@ This file is auto-injected every session. It stores two things:
 ## 👥 Agent Roster
 | Agent | Role | Workspace | Cron |
 |-------|------|-----------|------|
-| Felix | CEO/Orchestrator | `workspace` | heartbeat |
+| Felix | CEO/Orchestrator | `workspace` | heartbeat (every 30 min) |
 | Iris | Developer | `workspace-dev` | — |
 | Kat | Copywriter | `workspace-kat` | On-demand |
-| Alex | Chief Growth Officer | `workspace-alex` | TBD |
-| Nova | Customer Success | `workspace-nova` | Every 15 min |
+| Alex | Chief Growth Officer | `workspace-alex` | Hourly (optional) |
 | Pierce | QC & Security | `workspace-pierce` | Daily 7 AM security · Monday 7 AM Lighthouse/UX |
 
 > ⚠️ **When registering a new project agent, also add them to this roster.** Other agents auto-discover new projects from here.
@@ -88,6 +87,64 @@ Before sending ANY task to an agent:
 - **Never** infer connectivity from local CLI installs or `~/.config/` directories alone.
 - **Always** use `composio_manage_connections` to verify Vercel/Stripe/etc.
 - Checking `which vercel` or `ls ~/.config/stripe/` will always return nothing — that is expected.
+
+## Audio Transcription
+- **Use `faster-whisper`** (CTranslate2 backend) — NOT regular `openai-whisper` (OOMs in resource-constrained environments)
+- Script: `python3 ~/.openclaw/workspace/scripts/transcribe.py <audio_file> [--model base]`
+- Default model: `base` (int8 quantized) — fast and accurate for most use cases
+- `tiny` available for speed at slight accuracy cost
+- Always convert ogg→wav via ffmpeg first (handled automatically by the script)
+
+## Dynamic Model Switching
+- Default: whatever model is configured in OpenClaw (check `runtime` block in system prompt)
+- Lightweight: use `session_status(model="anthropic/claude-sonnet-4-6")` for simple conversations
+- Use `session_status(model="default")` to reset to the default model
+- Cannot switch to a heavier model by name — must use `default` to reset
+
+## Self-Improvement Protocol
+All agents follow the `self-improvement-protocol` skill:
+- **Correction Detection:** Log corrections when user says "no, that's not right", "always do X", "never do Y"
+- **3x Rule:** Same instruction 3 times → auto-promote to permanent rule in MEMORY.md
+- **Self-Reflection:** After every significant task, log what worked and what didn't in daily notes
+- **Nightly Assessment:** Part of the nightly deep dive — review corrections, promote patterns, flag drift
+- **Cross-Agent Lessons:** If a lesson applies to all agents, report to Felix for MEMORY.md update
+- **Never infer from silence.** Only log explicit corrections.
+
+## Web Automation Stack
+When any agent needs to interact with websites or scrape data, follow the `web-automation-protocol` skill. Decision tree:
+1. **Direct API** — check if the site has an API first
+2. **web_fetch** — simple page reads, no JS required
+3. **Unbrowse** — structured data extraction, API discovery (preferred over browser for most tasks)
+4. **browser tool** — when you need real UI interaction
+5. **browser + proxy** — bot-protected sites
+6. **browser + proxy + 2Captcha** — CAPTCHA-blocked sites
+
+Relevant installed tools (after setup):
+- **Unbrowse** — OpenClaw built-in, API-first web extraction
+- **2Captcha CLI** (`solve-captcha`) — if installed; API key at `~/.config/2captcha/api-key`
+- **Mobile Proxy** — if configured; config at `~/.config/litport/proxy.conf`
+
+## Installed Skills (recommended — install from ClawHub)
+| Skill | Purpose | Priority |
+|-------|---------|---------|
+| `audio-reply` | Mandatory audio reply procedure (edge-tts voice messages) | ⭐ Required |
+| `self-improvement-protocol` | Correction detection, self-reflection, memory rules | ⭐ Required |
+| `agent-comms-protocol` | When/how agents contact the user vs. resolve internally | ⭐ Required |
+| `web-automation-protocol` | When/how to use Unbrowse, proxy, 2Captcha, browser | High |
+| `coding-sessions` | Long-lived AI coding agents in tmux with completion hooks | High |
+| `felix-orchestration` | Delegation decisions, PRD-First Rule, stall detection | High |
+| `dev-agent-coding-tools` | Codex/Ralph syntax, coding tools reference | High |
+| `kat-copy-workflow` | Procedure for routing copy to Kat | High |
+| `pierce-issue-workflow` | Closing Pierce-opened GitHub issues | High |
+| `prd-maintenance` | Keeping PRDs current after feature ships | Medium |
+| `support-docs-standard` | Required support-docs/ structure for projects | Medium |
+| `tmux-agents` | Persistent tmux sessions for long-running processes | Medium |
+| `screenshot` | Screenshot capture across platforms | Medium |
+| `research` | Web + X/Twitter search via xAI | Medium |
+| `here-now` | Instant web publishing | Medium |
+| `postiz` | Social media scheduling across 28+ channels | Optional |
+| `x-api` | Post/read/reply on X/Twitter via v2 API | Optional |
+| `2captcha` | CAPTCHA solving for web automation | Optional |
 
 ## Silent Replies
 When you have nothing to say, respond with ONLY: NO_REPLY

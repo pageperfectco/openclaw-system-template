@@ -6,28 +6,26 @@
 
 ## What This Installs
 
-A 6-agent OpenClaw system:
+A 5-agent OpenClaw system:
 - **Felix** — CEO/Orchestrator (main agent)
-- **Iris** — Developer (or rename to whatever fits your stack)
+- **Iris** — Developer (rename to whatever fits your stack)
 - **Kat** — Copywriter
 - **Alex** — Growth / CRO
-- **Nova** — Customer Success
 - **Pierce** — QC & Security
 
 ---
 
 ## Step 1 — Clone & Copy Workspace Files
 
-Clone the repo and copy each workspace folder to `~/.openclaw/`:
+Ask the repo owner to add you as a collaborator, then clone:
 
 ```bash
-git clone https://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@github.com/pageperfectco/openclaw-system-template /tmp/openclaw-system-template
+git clone https://github.com/pageperfectco/openclaw-system-template /tmp/openclaw-system-template
 
 cp -r /tmp/openclaw-system-template/workspace/ ~/.openclaw/workspace/
 cp -r /tmp/openclaw-system-template/workspace-dev/ ~/.openclaw/workspace-dev/
 cp -r /tmp/openclaw-system-template/workspace-kat/ ~/.openclaw/workspace-kat/
 cp -r /tmp/openclaw-system-template/workspace-alex/ ~/.openclaw/workspace-alex/
-cp -r /tmp/openclaw-system-template/workspace-nova/ ~/.openclaw/workspace-nova/
 cp -r /tmp/openclaw-system-template/workspace-pierce/ ~/.openclaw/workspace-pierce/
 ```
 
@@ -39,10 +37,13 @@ cp -r /tmp/openclaw-system-template/workspace-pierce/ ~/.openclaw/workspace-pier
 
 In `~/.openclaw/workspace/`:
 - **`USER.md`** — Fill in the user's name, timezone, email, and any personal context.
-- **`IDENTITY.md`** — Felix's identity is pre-filled. Adjust if they want to rename.
+- **`IDENTITY.md`** — Felix's identity is pre-filled. Adjust if you want to rename.
 
 In `~/.openclaw/workspace-dev/`:
-- **`IDENTITY.md`** — Rename "Iris" to whatever fits. Update mission to match the stack.
+- **`IDENTITY.md`** — Rename "Iris" to whatever fits your stack. Update mission to match.
+
+In each agent workspace (`workspace-kat/`, `workspace-alex/`, `workspace-pierce/`):
+- **`IDENTITY.md`** — Review and adjust the agent name/role if desired.
 
 ---
 
@@ -54,7 +55,7 @@ GitHub is required for the backup repo (Step 6) and for Iris to push code. Check
 gh auth status
 ```
 
-If not authenticated, run the login flow:
+If not authenticated:
 
 ```bash
 gh auth login
@@ -116,21 +117,21 @@ Both should run without errors. If they do, the agent dispatch system is live.
 This gives you a full git history of your workspace — so if a config change breaks something, you can revert instantly.
 
 ```bash
-# Initialize workspace as a git repo
-cd ~/.openclaw/workspace
-git init
-git add -A
-git commit -m "Initial workspace setup"
+# Create a private backup repo on GitHub
+gh repo create openclaw-workspaces-backup --private
 
-# Create a private backup repo on GitHub and push
-gh repo create openclaw-workspace-backup --private --source=. --remote=origin --push
+# Clone it to the expected location
+git clone https://github.com/[your-username]/openclaw-workspaces-backup ~/.openclaw/workspaces-backup
+
+# Run a first backup
+bash ~/.openclaw/workspace/scripts/backup-workspaces.sh
 ```
 
-From this point on, Felix will commit workspace changes periodically. To revert a bad change:
+From this point on, Felix will commit workspace changes every heartbeat. To revert a bad change:
 ```bash
-cd ~/.openclaw/workspace
+cd ~/.openclaw/workspaces-backup
 git log --oneline -10       # find the commit to revert to
-git revert HEAD             # or: git checkout <commit> -- MEMORY.md
+git revert HEAD             # or: git checkout <commit> -- workspace/MEMORY.md
 ```
 
 > This repo is yours — it evolves with your system over time. Keep it private.
@@ -141,17 +142,30 @@ git revert HEAD             # or: git checkout <commit> -- MEMORY.md
 
 This gives all agents the ability to understand your voice messages (via Whisper) and speak back with unique voices (via Edge TTS).
 
-### Install Whisper (speech-to-text)
+### Install faster-whisper (speech-to-text)
 
 ```bash
-pip3 install openai-whisper --break-system-packages
-python3 -c "import whisper; whisper.load_model('small'); print('Whisper ready')"
+pip3 install faster-whisper --break-system-packages
 ```
+
+Test it (first run downloads the model — ~150MB for `base`):
+
+```bash
+python3 ~/.openclaw/workspace/scripts/transcribe.py /path/to/any/audio.mp3
+```
+
+> **Why faster-whisper instead of openai-whisper?** CTranslate2 backend uses ~4x less RAM — works reliably in memory-constrained sandboxes. Uses int8 quantization with no accuracy penalty for speech.
 
 ### Install Edge TTS (text-to-speech)
 
 ```bash
 pip3 install edge-tts --break-system-packages
+```
+
+Test it:
+
+```bash
+edge-tts --voice en-US-GuyNeural --rate +20% --text "Felix online." --write-media /tmp/test-tts.mp3
 ```
 
 ### Configure `openclaw.json`
@@ -168,8 +182,8 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
         "models": [
           {
             "type": "cli",
-            "command": "/home/node/.local/bin/whisper",
-            "args": ["--model", "small", "{{MediaPath}}"],
+            "command": "python3",
+            "args": ["/home/node/.openclaw/workspace/scripts/transcribe.py", "{{MediaPath}}"],
             "capabilities": ["audio"],
             "maxBytes": 25165824
           }
@@ -188,9 +202,7 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
 }
 ```
 
-> **Note:** Each agent's `SOUL.md` already includes their assigned voice and the edge-tts command pattern. No additional config needed per agent.
-
-### Voice roster (defaults — change any time in `SOUL.md`)
+### Voice roster (defaults — change any time in the agent's `SOUL.md`)
 
 | Agent | Voice | Gender |
 |-------|-------|--------|
@@ -198,7 +210,6 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
 | Iris (dev) | en-US-JennyNeural | Female |
 | Kat | en-US-MichelleNeural | Female |
 | Alex | en-US-DavisNeural | Male |
-| Nova | en-US-AriaNeural | Female |
 | Pierce | en-US-RogerNeural | Male |
 
 ---
@@ -206,25 +217,86 @@ Add the following to your `~/.openclaw/openclaw.json` under the root object (mer
 ## Step 8 — Configure Cron Jobs
 
 ```bash
+# Felix heartbeat — runs every 30 minutes
 openclaw cron add --label "felix:heartbeat" --schedule "*/30 * * * *" --workspace workspace --prompt "Heartbeat"
+
+# Pierce daily security audit — runs at 7 AM in your timezone (adjust as needed)
 openclaw cron add --agent pierce --name "pierce-daily-security-audit" --cron "0 7 * * *" --tz "America/Denver" --session isolated --message "Run your daily security audit across all active projects: check all new commits since yesterday, scan for secrets/credentials in code, review dependency vulnerabilities (npm audit / pip audit), verify security headers on all live sites, check RLS on any new Supabase tables, and review open GitHub security issues. Report findings ranked by severity. Open GitHub issues for Tier 2+ findings. Page Felix immediately for Tier 3 critical findings."
+
+# Pierce weekly Lighthouse/UX audit — runs every Monday at 7 AM
 openclaw cron add --agent pierce --name "pierce-weekly-lighthouse-ux" --cron "0 7 * * 1" --tz "America/Denver" --session isolated --message "Run your weekly Lighthouse and UX/UI audit across all active projects: run Lighthouse on all live sites, record scores in MEMORY.md, flag any drop >5 points from last week. Review each site for UX/UI improvements: layout issues, accessibility gaps, mobile responsiveness, broken links, slow assets. Document findings and open GitHub issues for anything worth fixing. Focus purely on UX/UI quality and performance — no security checks today."
-openclaw cron add --label "nova:check" --schedule "*/15 * * * *" --workspace workspace-nova --prompt "Check inbox and handle any customer messages"
+
+# Alex hourly growth check (optional — enable when projects are live)
+# openclaw cron add --agent alex --name "alex:growth" --cron "0 * * * *" --tz "America/Denver" --session isolated --message "Review active tests, check metrics, report any significant movements."
 ```
+
+> ⚠️ Update the timezone (`America/Denver`) to match your local timezone.
 
 ---
 
-## Step 9 — Optional: Set Up Email
+## Step 9 — Install Recommended Skills
+
+Skills extend what agents can do. Install from [ClawHub](https://clawhub.com):
+
+**Required (install these first):**
+```bash
+# Audio reply — agents respond with voice messages
+clawhub install audio-reply --all-workspaces
+
+# Self-improvement — correction detection + memory promotion
+clawhub install self-improvement-protocol --all-workspaces
+
+# Agent comms — governs when/how agents contact the user
+clawhub install agent-comms-protocol --all-workspaces
+```
+
+**Highly recommended:**
+```bash
+# Web automation protocol — decision tree for web scraping/automation
+clawhub install web-automation-protocol --all-workspaces
+
+# Coding sessions — long-lived agents in tmux with completion hooks
+clawhub install coding-sessions --workspace workspace-dev
+
+# Felix orchestration — PRD-First Rule, stall detection, delegation logic
+clawhub install felix-orchestration --workspace workspace
+
+# Dev agent coding tools — Codex/Ralph syntax reference
+clawhub install dev-agent-coding-tools --workspace workspace-dev
+
+# Copy workflow — how to brief Kat properly
+clawhub install kat-copy-workflow --all-workspaces
+
+# Pierce issue workflow — how to close Pierce-opened GitHub issues
+clawhub install pierce-issue-workflow --workspace workspace
+```
+
+**Optional (add when needed):**
+```bash
+clawhub install research --all-workspaces       # Grok + X/Twitter search
+clawhub install here-now --workspace workspace   # Instant web publishing
+clawhub install x-api --workspace workspace-alex # X/Twitter via v2 API
+clawhub install postiz --workspace workspace-alex # Social media scheduler
+clawhub install screenshot --all-workspaces      # Screen capture
+clawhub install 2captcha --workspace workspace    # CAPTCHA solving
+```
+
+> Not all skill slugs above may match the exact ClawHub names — search ClawHub if a command fails.
+
+---
+
+## Step 10 — Set Up Email (Optional)
 
 For outbound agent email via [AgentMail](https://agentmail.to):
 1. Create an account at agentmail.to
-2. Create inboxes: `felix@[yourdomain].agentmail.to`, `nova@[yourdomain].agentmail.to`
-3. Save API key to `~/.config/agentmail/api_key`
-4. Update inbox IDs in each agent's `AGENTS.md`
+2. Create an inbox for Felix: `felix@[yourdomain].agentmail.to`
+3. Save API key: `echo "your-key-here" > ~/.config/agentmail/api_key`
+4. Update the inbox ID in `workspace/AGENTS.md` and `workspace/MEMORY.md`
+5. Optionally create inboxes for other agents (Kat, Alex) and update their AGENTS.md
 
 ---
 
-## Step 10 — Bootstrap
+## Step 11 — Bootstrap
 
 Felix's workspace has a `BOOTSTRAP.md`. Open a chat with Felix and say:
 

@@ -52,8 +52,9 @@ Two connection types exist. Don't confuse them:
 | Iris | Developer | `workspace-dev` | dev |
 | Kat | Copywriter | `workspace-kat` | kat |
 | Alex | Chief Growth Officer | `workspace-alex` | alex |
-| Nova | Customer Success | `workspace-nova` | nova |
 | Pierce | QC & Security | `workspace-pierce` | pierce |
+
+> ⚠️ **When adding a new agent, add them to this roster and to MEMORY.md.** Other agents auto-discover teammates from these rosters.
 
 ---
 
