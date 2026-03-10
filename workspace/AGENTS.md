@@ -36,7 +36,6 @@ Two connection types exist. Don't confuse them:
 | **Stripe** | API key | `STRIPE_SECRET_KEY` at project workspace `.env` | Direct SDK/API calls |
 | **Supabase** | API key (PAT) | `SUPABASE_PAT` at `~/.openclaw/workspace/.env` | Management API |
 | **AgentMail** | API key | `~/.config/agentmail/api_key` | All outbound email via Python client |
-| **here.now** | API key | `~/.herenow/credentials` | Publishing via here-now skill |
 
 > Update this table as you connect services. Delete placeholder rows for services you're not using yet.
 

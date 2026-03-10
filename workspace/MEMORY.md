@@ -44,7 +44,7 @@ This file is auto-injected every session. It stores two things:
 ## ⚠️ Project Setup Check — MANDATORY Before Every Change or Comment
 Before making changes to any project OR saying anything about how it's deployed/hosted/structured:
 1. **Read the project's entry in this registry first** — deploy method, URLs, key paths
-2. **If the registry entry is incomplete or unclear**, check the actual project: `cat vercel.json`, `ls .herenow/`, `cat package.json`, etc.
+2. **If the registry entry is incomplete or unclear**, check the actual project: `cat vercel.json`, `cat package.json`, `cat run.sh`, etc.
 3. **Never infer deploy target from config file presence alone**
 4. **After confirming**, update the registry if anything was missing or wrong
 

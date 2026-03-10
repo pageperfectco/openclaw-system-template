@@ -338,7 +338,6 @@ ls ~/.openclaw/workspace-alex/skills/
 | kat-copy-workflow | Felix, Alex, Silas |
 | research | Felix, Alex, Silas |
 | pierce-issue-workflow | Felix |
-| here-now | Felix |
 | x-api | Alex |
 | postiz | Alex |
 | seo-research-master | Silas |
