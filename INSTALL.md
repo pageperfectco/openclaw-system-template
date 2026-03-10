@@ -18,8 +18,6 @@ A 6-agent OpenClaw system:
 
 ## Step 1 — Clone & Copy Workspace Files
 
-Ask the repo owner to add you as a collaborator, then clone:
-
 ```bash
 git clone https://github.com/pageperfectco/openclaw-system-template /tmp/openclaw-system-template
 
