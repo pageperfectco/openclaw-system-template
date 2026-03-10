@@ -193,8 +193,10 @@ npm install -g @openai/codex
 # Claude Code (Anthropic) — alternative coding agent
 npm install -g @anthropic-ai/claude-code
 
-# Ralphy — Ralph orchestration loop for multi-step coding tasks with PRD validation
-npm install -g ralphy
+# Ralphy — Ralph Orchestrator (multi-step coding loop with PRD validation)
+# NOTE: This is NOT the npm package called "ralphy" — that's a different, unrelated tool.
+# Install via Homebrew:
+brew install ralph-orchestrator
 ```
 
 Verify they're all working:
@@ -202,10 +204,10 @@ Verify they're all working:
 ```bash
 codex --version
 claude --version
-ralphy --help
+ralphy --help   # should show Ralph Orchestrator CLI, NOT "Web UI for ralph script"
 ```
 
-> **What is Ralphy?** It's the Ralph orchestration loop — used when a task is complex enough to need iterative cycles, a PRD spec, or validation gates. Dev agents prefer it over raw Codex for anything multi-step. Without it installed, they'll fall back to raw Codex, which is less reliable for large tasks.
+> **What is Ralphy?** Ralph Orchestrator is a Rust-built multi-agent coding loop. Dev agents use it for tasks with a PRD spec, iterative cycles, or validation gates. It's installed via Homebrew (`ralph-orchestrator`), not npm. The npm package named `ralphy` is a completely different, unrelated tool — do not install it.
 
 ---
 
