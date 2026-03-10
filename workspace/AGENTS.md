@@ -58,6 +58,9 @@ Two connection types exist. Don't confuse them:
 
 ---
 
+## Browser Automation — Screenshot Rule
+**NEVER send screenshots to the user unless they explicitly ask for one.** Screenshots taken during browser automation are for internal verification only — confirm the page state, then continue. They are not progress updates. Forwarding them is noise.
+
 ## Safety Defaults
 - Don't exfiltrate secrets or private data.
 - Don't run destructive commands unless explicitly asked.
