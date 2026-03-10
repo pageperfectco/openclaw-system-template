@@ -305,54 +305,52 @@ openclaw cron add --agent pierce --name "pierce-weekly-lighthouse-ux" --cron "0 
 
 ---
 
-## Step 12 — Install Recommended Skills
+## Step 12 — Verify Skills (Pre-Bundled)
 
-Skills extend what agents can do. Install from [ClawHub](https://clawhub.com):
+> ✅ **Most skills are already installed.** The template workspaces include skill directories pre-bundled in Step 1. You do NOT need to run `clawhub install` for skills that are already present.
 
-**Required (install these first):**
+Verify coverage by checking what's in each workspace:
+
 ```bash
-# Audio reply — agents respond with voice messages
-clawhub install audio-reply --all-workspaces
-
-# Self-improvement — correction detection + memory promotion
-clawhub install self-improvement-protocol --all-workspaces
-
-# Agent comms — governs when/how agents contact the user
-clawhub install agent-comms-protocol --all-workspaces
+ls ~/.openclaw/workspace/skills/
+ls ~/.openclaw/workspace-dev/skills/
+ls ~/.openclaw/workspace-alex/skills/
 ```
 
-**Highly recommended:**
+**Pre-bundled skills (already installed via template):**
+| Skill | Workspaces |
+|-------|-----------|
+| audio-reply | All |
+| agent-comms-protocol | All |
+| self-improvement-protocol | All |
+| web-automation-protocol | All |
+| screenshot | All |
+| 2captcha | All |
+| summarize | All |
+| coding-sessions | Felix, Iris |
+| tmux-agents | Felix, Iris |
+| dev-agent-coding-tools | Felix, Iris |
+| supabase-ops | Felix, Iris |
+| prd-maintenance | Felix, Iris |
+| felix-orchestration | Felix |
+| kat-copy-workflow | Felix, Alex, Silas |
+| research | Felix, Alex, Silas |
+| pierce-issue-workflow | Felix |
+| here-now | Felix |
+| x-api | Alex |
+| postiz | Alex |
+| seo-research-master | Silas |
+| seo-content-engine | Silas |
+| seo-competitor-analysis | Silas |
+
+**If any are missing**, install via ClawHub:
 ```bash
-# Web automation protocol — decision tree for web scraping/automation
-clawhub install web-automation-protocol --all-workspaces
-
-# Coding sessions — long-lived agents in tmux with completion hooks
-clawhub install coding-sessions --workspace workspace-dev
-
-# Felix orchestration — PRD-First Rule, stall detection, delegation logic
-clawhub install felix-orchestration --workspace workspace
-
-# Dev agent coding tools — Codex/Ralph syntax reference
-clawhub install dev-agent-coding-tools --workspace workspace-dev
-
-# Copy workflow — how to brief Kat properly
-clawhub install kat-copy-workflow --all-workspaces
-
-# Pierce issue workflow — how to close Pierce-opened GitHub issues
-clawhub install pierce-issue-workflow --workspace workspace
+clawhub install <skill-name> --workspace <workspace-id>
+# or for all workspaces:
+clawhub install <skill-name> --all-workspaces
 ```
 
-**Optional (add when needed):**
-```bash
-clawhub install research --all-workspaces       # Grok + X/Twitter search
-clawhub install here-now --workspace workspace   # Instant web publishing
-clawhub install x-api --workspace workspace-alex # X/Twitter via v2 API
-clawhub install postiz --workspace workspace-alex # Social media scheduler
-clawhub install screenshot --all-workspaces      # Screen capture
-clawhub install 2captcha --workspace workspace    # CAPTCHA solving
-```
-
-> Not all skill slugs above may match the exact ClawHub names — search ClawHub if a command fails.
+> Search available skills at [clawhub.com](https://clawhub.com)
 
 ---
 
