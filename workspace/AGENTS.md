@@ -58,6 +58,17 @@ Two connection types exist. Don't confuse them:
 
 ---
 
+## ⚠️ Credentials — NEVER in Memory Files
+**HARD RULE: Never write passwords, API keys, tokens, or any credentials into MEMORY.md, daily notes, or any markdown file.** These files sync to git and are visible in backups.
+
+Credentials go ONLY in:
+- `~/.openclaw/workspace[-name]/.env` (gitignored)
+- `~/.config/[service]/` (system config)
+
+In memory files: reference the location, never the value. Example:
+✅ `Credentials: stored in workspace-max/.env as MSC_PORTAL_EMAIL / MSC_PORTAL_PASSWORD`
+❌ `Credentials: daniel@example.com / mypassword123`
+
 ## Browser Automation — Screenshot Rule
 **NEVER send screenshots to the user unless they explicitly ask for one.** Screenshots taken during browser automation are for internal verification only — confirm the page state, then continue. They are not progress updates. Forwarding them is noise.
 
