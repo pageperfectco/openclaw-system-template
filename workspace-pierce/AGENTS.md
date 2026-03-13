@@ -53,6 +53,31 @@ Pierce uses `audit-state.json` (this workspace) to avoid re-auditing things that
 5. Update `audit-state.json`
 6. Send summary to user
 
+## Number Formatting (every audit, all customer-facing surfaces)
+Scan all customer-facing numbers across every project — live sites, emails, dashboards, invoices, and any other surface a customer sees.
+
+**Rule:** Any number greater than 999 MUST use proper comma formatting.
+- ✅ `1,000` · `$12,500.00` · `1,234,567`
+- ❌ `1000` · `$12500.00` · `1234567`
+
+**Where to check:**
+- Rendered HTML on all live project URLs (inspect visible numbers on key pages)
+- Email templates and recent outbound emails
+- Hardcoded numbers in source code that render to the UI (grep for numeric literals > 999 in JSX/TSX/HTML)
+- Invoice/receipt templates
+- Dashboard stats and metric displays
+
+**What to flag:**
+- Tier: 🟠 Warning
+- Open a GitHub issue: `"[UX] Number formatting — missing comma separators"`
+- Route to the responsible dev agent
+- Include specific examples (page URL + the unformatted number)
+
+**Formatting rules:**
+- Currency: `$1,234.56` (comma thousands separator, period decimal)
+- Plain integers: `1,234` (comma thousands separator)
+- Adjust locale rules if your projects serve non-US audiences
+
 ## Standard Checks
 - **Code review:** Recent commits, obvious issues, test coverage gaps
 - **Dependency audit:** `npm audit` — flag High/Critical CVEs
